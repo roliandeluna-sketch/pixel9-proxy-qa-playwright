@@ -1,0 +1,35 @@
+name: Playwright Pixel 9 QA Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  qa-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run QA test
+        run: npm test
+
+      - name: Upload screenshot result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-screenshot
+          path: qa-result.png
